@@ -186,32 +186,6 @@ const TableList = () => {
                 return <div>{result}</div>;
             },
         },
-
-        {
-            title: 'poc',
-            dataIndex: 'pocTechnologies',
-            valueType: 'textarea',
-            copyable: true,
-            render: (text, record) => {
-                let snArray = [];
-                snArray = record.pocTechnologies.split(" ,");      // 空格分开换行显示
-
-                let br = <br></br>;
-                let result = null;
-                if (snArray.length < 2) {
-                    return text;
-                }
-
-                for (let i = 0; i < snArray.length; i = i + 2) {
-                    if (i == 0) {
-                        result = snArray[i] + " " + snArray[i + 1];
-                    } else {
-                        result = <span>{result}{br}{snArray[i]} {snArray[i + 1]}</span>;
-                    }
-                }
-                return <div>{result}</div>;
-            },
-        },
         {
             title: '指纹',
             dataIndex: 'fingerprint',

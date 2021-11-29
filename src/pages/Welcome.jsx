@@ -30,12 +30,12 @@ const Welcome = () => {
                 </Typography.Title>
                 <CodePreview>子域名查询 subfinder被动获取 + shuffledns 主动爆破</CodePreview>
                 <CodePreview>端口扫描 masscan + nmap</CodePreview>
+                <CodePreview>集成 nuclei 进行漏扫</CodePreview>
                 <CodePreview>黑名单ip，不进行端口扫描</CodePreview>
                 <CodePreview>使用 dismap 进行指纹识别</CodePreview>
                 <CodePreview>cdn 自动跳过端口扫描, CDN IP 判断方法</CodePreview>
                 <CodePreview>钉钉机器人通知，需要在配置文件中配置token和Secret</CodePreview>
                 <CodePreview>子域名接管检测subjack</CodePreview>
-                <CodePreview>使用vscan进行基础漏洞扫描</CodePreview>
                 <CodePreview>循环扫描</CodePreview>
                 <CodePreview>扫描结果导出csv</CodePreview>
 
