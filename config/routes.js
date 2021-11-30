@@ -65,9 +65,16 @@ export default [
         component: './ScanInfo',
     },
     {
+        name: 'Nuclei',
+        icon: 'smile',
+        path: '/nuclei',
+        component: './Nuclei',
+    },
+    {
         name: '黑名单IP',
         icon: 'BugOutlined',
         path: '/blacklist',
         component: './Blacklist',
     },
+
 ];

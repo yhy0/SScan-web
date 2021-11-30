@@ -253,7 +253,7 @@ const TableList = () => {
         <PageContainer>
             <ProTable
                 scroll={{ x: 'max-content' }}
-                headerTitle="查询表格"
+                headerTitle=""
                 actionRef={actionRef}
                 rowKey="url"            // 根据这个值删除
                 search={{

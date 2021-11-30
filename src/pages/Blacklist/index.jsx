@@ -150,7 +150,7 @@ const TableList = () => {
     return (
         <PageContainer>
             <ProTable
-                headerTitle="查询表格"
+                headerTitle=""
                 actionRef={actionRef}
                 rowKey="key"
                 search={{

@@ -113,155 +113,109 @@ const TableList = () => {
             },
         },
         {
-            title: 'url',
-            dataIndex: 'url',
+            title: 'host',
+            dataIndex: 'host',
             valueType: 'textarea',
             wordWrap: "break-word",
             copyable: true,
         },
         {
-            title: '标题',
-            dataIndex: 'title',
+            title: 'TemplateId',
+            dataIndex: 'template-id',
             valueType: 'textarea',
             ellipsis: true,
         },
         {
+            title: 'info',
+            dataIndex: 'info',
+            valueType: 'textarea',
+            ellipsis: true,
+        },
+        {
+            title: 'severity',
+            dataIndex: 'severity',
+            valueType: 'textarea',
+            render: (text, record) => {
+                switch (record.severity) {
+                    case "info":
+                        return <Tag color="green"> {record.severity}</Tag>;
+                    case "low":
+                        return <Tag color="blue"> {record.severity}</Tag>;
+                    case "medium":
+                        return <Tag color="purple"> {record.severity}</Tag>;
+                    case "critical":
+                        return <Tag color="volcano"> {record.severity}</Tag>;
+                    case "high":
+                        return <Tag color="red"> {record.severity}</Tag>;
+                }
+            }
+        },
+        {
+            title: 'type',
+            dataIndex: 'type',
+            valueType: 'textarea',
+        },
+
+        {
+            title: 'matched-at',
+            dataIndex: 'matched-at',
+            valueType: 'textarea',
+            copyable: true,
+        },
+        {
+            title: 'request',
+            dataIndex: 'request',
+            valueType: 'textarea',
+            ellipsis: true,
+            copyable: true,
+        },
+
+        {
+            title: 'response',
+            dataIndex: 'response',
+            valueType: 'textarea',
+            ellipsis: true,
+            copyable: true,
+        },
+
+        {
             title: 'ip',
             dataIndex: 'ip',
             valueType: 'textarea',
-            render: (text, record) => {
-                let snArray = [];
-
-                snArray = record.ip.split(" ");      // 空格分开换行显示
-
-                let br = <br></br>;
-                let result = null;
-                if (snArray.length < 2) {
-                    return text;
-                }
-
-                for (let i = 0; i < snArray.length; i = i + 2) {
-                    if (i == 0) {
-                        result = snArray[i] + " " + snArray[i + 1];
-                    } else {
-                        result = <span>{result}{br}{snArray[i]} {snArray[i + 1]}</span>;
-                    }
-                }
-                return <div>{result}</div>;
-            },
-        },
-        {
-            title: '端口',
-            dataIndex: 'port',
-            valueType: 'textarea',
-        },
-        {
-            title: '服务',
-            dataIndex: 'service',
-            valueType: 'textarea',
-        },
-        {
-            title: 'FUZZ',
-            dataIndex: 'fileFuzz',
-            valueType: 'textarea',
             copyable: true,
-            render: (text, record) => {
-                let snArray = [];
-                text = record.fileFuzz.toString();
-                snArray = text.split(" ");      // 空格分开换行显示
-
-                let br = <br></br>;
-                let result = null;
-                if (snArray.length < 2) {
-                    return text;
-                }
-
-                for (let i = 0; i < snArray.length; i = i + 1) {
-                    if (i == 0) {
-                        result = snArray[i];
-                    } else {
-                        result = <span>{result}{br}{snArray[i]} </span>;
-                    }
-                }
-                return <div>{result}</div>;
-            },
-        },
-        {
-            title: '指纹',
-            dataIndex: 'fingerprint',
-            render: (text, record) => {
-                if (record.fingerprint != "") {
-                    console.log(record.fingerprint);
-                    let snArray = [];
-                    snArray = record.fingerprint.split(" ,");      // 空格分开换行显示
-
-                    let br = <br></br>;
-                    let result = null;
-                    let a = new Array();
-                    if (snArray.length > 0 && snArray.length < 2) {
-                        return <Tag color="blue"> {record.fingerprint}</Tag>;
-                    }
-
-                    for (let i = 0; i < snArray.length; i = i + 1) {
-                        a[i] = <Tag color="blue"> {snArray[i]} </Tag>;
-                    }
-
-                    for (let i = 0; i < a.length; i = i + 2) {
-                        if (i == 0) {
-                            result = <span> {a[0]} {a[1]} </span >;
-                        } else {
-                            result = <span> {result} {br} {a[i]} {a[i + 1]}</span >;
-                        }
-                    }
-                    return <div>{result}</div>;
-                };
-            },
         },
 
         {
-            title: '状态',
-            dataIndex: 'status',
-            hideInForm: true,
-            search: false,
-            valueEnum: {
-                0: {
-                    text: '关闭',
-                    status: 'Default',
-                },
-                1: {
-                    text: '运行中',
-                    status: 'Processing',
-                },
-                2: {
-                    text: '异常',
-                    status: 'Error',
-                },
-            },
+            title: 'CurlCommand',
+            dataIndex: 'curl-command',
+            valueType: 'textarea',
+            ellipsis: true,
+            copyable: true,
         },
-        {
-            title: '更新时间',
-            sorter: true,
-            dataIndex: 'UpdatedAt',
-            valueType: 'dateTime',
-            renderFormItem: (item, { defaultRender, ...rest }, form) => {
-                const status = form.getFieldValue('status');
+        // {
+        //     title: '更新时间',
+        //     sorter: true,
+        //     dataIndex: 'UpdatedAt',
+        //     valueType: 'dateTime',
+        //     renderFormItem: (item, { defaultRender, ...rest }, form) => {
+        //         const status = form.getFieldValue('status');
 
-                if (`${status}` === '0') {
-                    return false;
-                }
+        //         if (`${status}` === '0') {
+        //             return false;
+        //         }
 
-                if (`${status}` === '2') {
-                    return <Input {...rest} placeholder="请输入异常原因！" />;
-                }
+        //         if (`${status}` === '2') {
+        //             return <Input {...rest} placeholder="请输入异常原因！" />;
+        //         }
 
-                return defaultRender(item);
-            },
-        },
+        //         return defaultRender(item);
+        //     },
+        // },
     ];
     return (
         <PageContainer>
             <ProTable
-                scroll={{ x: 'max-content' }}
+                // scroll={{ x: 'max-content' }}
                 headerTitle=""
                 actionRef={actionRef}
                 rowKey="id"
@@ -310,7 +264,7 @@ const TableList = () => {
                         >
                             批量删除
                         </Button>
-                        <Button type="primary">批量审批</Button>
+                        {/* <Button type="primary">批量审批</Button> */}
                     </FooterToolbar>
                 )
             }
