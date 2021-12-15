@@ -113,19 +113,6 @@ const TableList = () => {
             sorter: true,
             dataIndex: 'UpdatedAt',
             valueType: 'dateTime',
-            renderFormItem: (item, { defaultRender, ...rest }, form) => {
-                const status = form.getFieldValue('status');
-
-                if (`${status}` === '0') {
-                    return false;
-                }
-
-                if (`${status}` === '3') {
-                    return <Input {...rest} placeholder="请输入异常原因！" />;
-                }
-
-                return defaultRender(item);
-            },
         },
         {
             title: '状态',
@@ -134,7 +121,7 @@ const TableList = () => {
             search: false,
             valueEnum: {
                 0: {
-                    text: '完成',
+                    text: '等待扫描',
                     status: 'Default',
                 },
                 1: {
@@ -142,8 +129,8 @@ const TableList = () => {
                     status: 'Processing',
                 },
                 2: {
-                    text: '异常',
-                    status: 'Error',
+                    text: '扫描完成',
+                    status: 'Success',
                 },
             },
         },

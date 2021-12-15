@@ -112,19 +112,6 @@ const TableList = () => {
             sorter: true,
             dataIndex: 'UpdatedAt',
             valueType: 'dateTime',
-            renderFormItem: (item, { defaultRender, ...rest }, form) => {
-                const status = form.getFieldValue('status');
-
-                if (`${status}` === '0') {
-                    return false;
-                }
-
-                if (`${status}` === '3') {
-                    return <Input {...rest} placeholder="请输入异常原因！" />;
-                }
-
-                return defaultRender(item);
-            },
         },
 
         {

@@ -120,12 +120,6 @@ const TableList = () => {
             copyable: true,
         },
         {
-            title: '标题',
-            dataIndex: 'title',
-            valueType: 'textarea',
-            ellipsis: true,
-        },
-        {
             title: 'ip',
             dataIndex: 'ip',
             valueType: 'textarea',
@@ -161,32 +155,6 @@ const TableList = () => {
             valueType: 'textarea',
         },
         {
-            title: 'FUZZ',
-            dataIndex: 'fileFuzz',
-            valueType: 'textarea',
-            copyable: true,
-            render: (text, record) => {
-                let snArray = [];
-                text = record.fileFuzz.toString();
-                snArray = text.split(" ");      // 空格分开换行显示
-
-                let br = <br></br>;
-                let result = null;
-                if (snArray.length < 2) {
-                    return text;
-                }
-
-                for (let i = 0; i < snArray.length; i = i + 1) {
-                    if (i == 0) {
-                        result = snArray[i];
-                    } else {
-                        result = <span>{result}{br}{snArray[i]} </span>;
-                    }
-                }
-                return <div>{result}</div>;
-            },
-        },
-        {
             title: '指纹',
             dataIndex: 'fingerprint',
             render: (text, record) => {
@@ -217,6 +185,38 @@ const TableList = () => {
                 };
             },
         },
+        {
+            title: '标题',
+            dataIndex: 'title',
+            valueType: 'textarea',
+            ellipsis: true,
+        },
+        {
+            title: 'FUZZ',
+            dataIndex: 'file_fuzz',
+            valueType: 'textarea',
+            copyable: true,
+            render: (text, record) => {
+                let snArray = [];
+                text = record.file_fuzz.toString();
+                snArray = text.split(" ");      // 空格分开换行显示
+
+                let br = <br></br>;
+                let result = null;
+                if (snArray.length < 2) {
+                    return text;
+                }
+
+                for (let i = 0; i < snArray.length; i = i + 1) {
+                    if (i == 0) {
+                        result = snArray[i];
+                    } else {
+                        result = <span>{result}{br}{snArray[i]} </span>;
+                    }
+                }
+                return <div>{result}</div>;
+            },
+        },
 
         {
             title: '状态',
@@ -225,16 +225,16 @@ const TableList = () => {
             search: false,
             valueEnum: {
                 0: {
-                    text: '关闭',
+                    text: '等待扫描',
                     status: 'Default',
                 },
                 1: {
-                    text: '运行中',
+                    text: '扫描中',
                     status: 'Processing',
                 },
                 2: {
-                    text: '异常',
-                    status: 'Error',
+                    text: '扫描完成',
+                    status: 'Success',
                 },
             },
         },
@@ -243,19 +243,6 @@ const TableList = () => {
             sorter: true,
             dataIndex: 'UpdatedAt',
             valueType: 'dateTime',
-            renderFormItem: (item, { defaultRender, ...rest }, form) => {
-                const status = form.getFieldValue('status');
-
-                if (`${status}` === '0') {
-                    return false;
-                }
-
-                if (`${status}` === '2') {
-                    return <Input {...rest} placeholder="请输入异常原因！" />;
-                }
-
-                return defaultRender(item);
-            },
         },
     ];
     return (

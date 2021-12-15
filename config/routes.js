@@ -19,28 +19,10 @@ export default [
         ],
     },
     {
-        name: 'welcome',
-        icon: 'smile',
+        name: 'SScan',
+        icon: '/dist/logo.svg',
         path: '/welcome',
         component: './Welcome',
-    },
-    {
-        path: '/admin',
-        name: 'admin',
-        icon: 'crown',
-        access: 'canAdmin',
-        component: './Admin',
-        routes: [
-            {
-                path: '/admin/sub-page',
-                name: 'sub-page',
-                icon: 'smile',
-                component: './Welcome',
-            },
-            {
-                component: './404',
-            },
-        ],
     },
     {
         path: '/',
@@ -48,31 +30,31 @@ export default [
     },
     {
         name: '资产管理',
-        icon: 'FireOutlined',
+        icon: '/dist/assets.svg',
         path: '/assets',
         component: './Aassets',
     },
     {
         name: '子域名管理',
-        icon: 'smile',
+        icon: '/dist/subdomains.svg',
         path: '/subdomains',
         component: './Subdomains',
     },
     {
         name: '扫描信息',
-        icon: 'StarOutlined',
+        icon: '/dist/scaninfo.svg',
         path: '/scanInfo',
         component: './ScanInfo',
     },
     {
         name: 'Nuclei',
-        icon: 'smile',
+        icon: '/dist/nuclei.svg',
         path: '/nuclei',
         component: './Nuclei',
     },
     {
         name: '黑名单IP',
-        icon: 'BugOutlined',
+        icon: '/dist/blacklist.svg',
         path: '/blacklist',
         component: './Blacklist',
     },

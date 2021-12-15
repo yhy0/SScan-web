@@ -146,9 +146,9 @@ const TableList = () => {
 
                 for (let i = 0; i < snArray.length; i = i + 2) {
                     if (i == 0) {
-                        result = snArray[i] + " " + snArray[i + 1];
+                        result = snArray[i] + "  " + snArray[i + 1];
                     } else {
-                        result = <span>{result}{br}{snArray[i]} {snArray[i + 1]}</span>;
+                        result = <span>{result}{br}{snArray[i]}  {snArray[i + 1]}</span>;
                     }
                 }
                 return <div>{result}</div>;
@@ -199,16 +199,16 @@ const TableList = () => {
             search: false,
             valueEnum: {
                 0: {
-                    text: '关闭',
+                    text: '等待扫描',
                     status: 'Default',
                 },
                 1: {
-                    text: '运行中',
+                    text: '扫描中',
                     status: 'Processing',
                 },
                 2: {
-                    text: '异常',
-                    status: 'Error',
+                    text: '扫描完成',
+                    status: 'Success',
                 },
             },
         },
@@ -217,19 +217,6 @@ const TableList = () => {
             sorter: true,
             dataIndex: 'UpdatedAt',
             valueType: 'dateTime',
-            renderFormItem: (item, { defaultRender, ...rest }, form) => {
-                const status = form.getFieldValue('status');
-
-                if (`${status}` === '0') {
-                    return false;
-                }
-
-                if (`${status}` === '3') {
-                    return <Input {...rest} placeholder="请输入异常原因！" />;
-                }
-
-                return defaultRender(item);
-            },
         },
         {
             title: '操作',

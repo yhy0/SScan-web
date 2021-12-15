@@ -87,7 +87,6 @@ const TableList = () => {
     const [selectedRowsState, setSelectedRows] = useState([]);
     /** 国际化配置 */
 
-
     const columns = [
         {
             title: 'id',
@@ -113,23 +112,25 @@ const TableList = () => {
             },
         },
         {
-            title: 'host',
-            dataIndex: 'host',
+            title: 'target',
+            dataIndex: 'matched_at',
             valueType: 'textarea',
             wordWrap: "break-word",
             copyable: true,
         },
         {
             title: 'TemplateId',
-            dataIndex: 'template-id',
+            dataIndex: 'template_id',
             valueType: 'textarea',
             ellipsis: true,
+            copyable: true,
         },
         {
             title: 'info',
             dataIndex: 'info',
             valueType: 'textarea',
             ellipsis: true,
+            copyable: true,
         },
         {
             title: 'severity',
@@ -155,28 +156,21 @@ const TableList = () => {
             dataIndex: 'type',
             valueType: 'textarea',
         },
+        // {
+        //     title: 'request',
+        //     dataIndex: 'request',
+        //     valueType: 'textarea',
+        //     ellipsis: true,
+        //     copyable: true,
+        // },
 
-        {
-            title: 'matched-at',
-            dataIndex: 'matched-at',
-            valueType: 'textarea',
-            copyable: true,
-        },
-        {
-            title: 'request',
-            dataIndex: 'request',
-            valueType: 'textarea',
-            ellipsis: true,
-            copyable: true,
-        },
-
-        {
-            title: 'response',
-            dataIndex: 'response',
-            valueType: 'textarea',
-            ellipsis: true,
-            copyable: true,
-        },
+        // {
+        //     title: 'response',
+        //     dataIndex: 'response',
+        //     valueType: 'textarea',
+        //     ellipsis: true,
+        //     copyable: true,
+        // },
 
         {
             title: 'ip',
@@ -185,31 +179,12 @@ const TableList = () => {
             copyable: true,
         },
 
-        {
-            title: 'CurlCommand',
-            dataIndex: 'curl-command',
-            valueType: 'textarea',
-            ellipsis: true,
-            copyable: true,
-        },
         // {
-        //     title: '更新时间',
-        //     sorter: true,
-        //     dataIndex: 'UpdatedAt',
-        //     valueType: 'dateTime',
-        //     renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        //         const status = form.getFieldValue('status');
-
-        //         if (`${status}` === '0') {
-        //             return false;
-        //         }
-
-        //         if (`${status}` === '2') {
-        //             return <Input {...rest} placeholder="请输入异常原因！" />;
-        //         }
-
-        //         return defaultRender(item);
-        //     },
+        //     title: 'CurlCommand',
+        //     dataIndex: 'curl_command',
+        //     valueType: 'textarea',
+        //     ellipsis: true,
+        //     copyable: true,
         // },
     ];
     return (
