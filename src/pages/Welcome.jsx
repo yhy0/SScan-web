@@ -28,17 +28,17 @@ const Welcome = () => {
                         target="__blank"> SScan </a>
                     <HeartTwoTone twoToneColor="#eb2f96" /> yhy
                 </Typography.Title>
-                <CodePreview>子域名查询 subfinder被动获取 + shuffledns 主动爆破</CodePreview>
-                <CodePreview>端口扫描 masscan + nmap</CodePreview>
+                <CodePreview>子域名查询使用<a href="https://github.com/OWASP/Amass"
+                    rel="noopener noreferrer"
+                    target="__blank"> Amass </a>项目</CodePreview>
+                <CodePreview>端口扫描 rustscan + nmap, 并且 cdn 自动跳过端口扫描</CodePreview>
                 <CodePreview>集成 nuclei 进行漏扫</CodePreview>
-                <CodePreview>黑名单ip，不进行端口扫描</CodePreview>
+                <CodePreview>优化 subjack 进行子域名接管检测</CodePreview>
                 <CodePreview>使用 dismap 进行指纹识别</CodePreview>
-                <CodePreview>cdn 自动跳过端口扫描, CDN IP 判断方法</CodePreview>
                 <CodePreview>钉钉机器人通知，需要在配置文件中配置token和Secret</CodePreview>
-                <CodePreview>子域名接管检测subjack</CodePreview>
+                <CodePreview>黑名单ip，不进行端口扫描</CodePreview>
                 <CodePreview>循环扫描</CodePreview>
                 <CodePreview>扫描结果导出csv</CodePreview>
-
             </Card>
         </PageContainer>
     );

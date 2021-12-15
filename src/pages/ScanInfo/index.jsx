@@ -95,6 +95,7 @@ const TableList = () => {
             valueType: 'textarea',
             hideInTable: true,      // 隐藏此列
         },
+
         {
             title: '资产',
             dataIndex: 'assets',
@@ -159,19 +160,33 @@ const TableList = () => {
             dataIndex: 'fingerprint',
             render: (text, record) => {
                 if (record.fingerprint != "") {
-                    console.log(record.fingerprint);
+
                     let snArray = [];
                     snArray = record.fingerprint.split(" ,");      // 空格分开换行显示
-
+                    let color_tmp;
                     let br = <br></br>;
                     let result = null;
                     let a = new Array();
                     if (snArray.length > 0 && snArray.length < 2) {
-                        return <Tag color="blue"> {record.fingerprint}</Tag>;
+                        if (snArray[0].includes("1_")) {
+                            color_tmp = "yellow";
+                        } else if (snArray[0].includes("2_")) {
+                            color_tmp = "blue";
+                        } else {
+                            color_tmp = "red";
+                        }
+                        return <Tag color={color_tmp}> {record.fingerprint.slice(2)}</Tag>;
                     }
 
                     for (let i = 0; i < snArray.length; i = i + 1) {
-                        a[i] = <Tag color="blue"> {snArray[i]} </Tag>;
+                        if (snArray[i].includes("1_")) {
+                            color_tmp = "yellow";
+                        } else if (snArray[i].includes("2_")) {
+                            color_tmp = "blue";
+                        } else {
+                            color_tmp = "red";
+                        }
+                        a[i] = <Tag color={color_tmp}> {snArray[i].slice(2)} </Tag>;
                     }
 
                     for (let i = 0; i < a.length; i = i + 2) {
