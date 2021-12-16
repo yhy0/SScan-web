@@ -193,7 +193,7 @@ const TableList = () => {
                         if (i == 0) {
                             result = <span> {a[0]} {a[1]} </span >;
                         } else {
-                            result = <span> {result} {br} {a[i]} {a[i + 1]}</span >;
+                            result = <span> {result} {br} {br} {a[i]} {a[i + 1]}</span >;
                         }
                     }
                     return <div>{result}</div>;

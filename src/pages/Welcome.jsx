@@ -31,7 +31,7 @@ const Welcome = () => {
                 <CodePreview>子域名查询使用<a href="https://github.com/OWASP/Amass"
                     rel="noopener noreferrer"
                     target="__blank"> Amass </a>项目</CodePreview>
-                <CodePreview>端口扫描 rustscan + nmap, 并且 cdn 自动跳过端口扫描</CodePreview>
+                <CodePreview>端口扫描 masscan + nmap, 并且 cdn 自动跳过端口扫描</CodePreview>
                 <CodePreview>集成 nuclei 进行漏扫</CodePreview>
                 <CodePreview>优化 subjack 进行子域名接管检测</CodePreview>
                 <CodePreview>使用 dismap 进行指纹识别</CodePreview>
