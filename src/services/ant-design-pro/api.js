@@ -7,18 +7,18 @@ import token from '@/utils/token';
 /** 获取当前的用户 GET /api/user/currentUser */
 export async function currentUser(options) {
   return request('/api/user/currentUser', {
-      headers: {
-          Authorization: 'JWT ' + token.get(),
-      },
-      method: 'GET',
-      ...(options || {}),
+    headers: {
+      Authorization: 'JWT ' + token.get(),
+    },
+    method: 'GET',
+    ...(options || {}),
   });
 }
 /** 退出登录接口 POST /api/user/logout */
 export async function outLogin(options) {
   return request('/api/user/logout', {
     headers: {
-        Authorization: 'JWT ' + token.get(),
+      Authorization: 'JWT ' + token.get(),
     },
     method: 'GET',
     ...(options || {}),
