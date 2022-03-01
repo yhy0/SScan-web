@@ -1,14 +1,12 @@
-import { PlusOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer, Switch, Modal, Alert } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, message, Input, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormCheckbox, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
-import { assets, addAssets, updateRule, removeAssets } from './service';
-import { request } from 'umi';
-import token from '@/utils/token';
+import { xray, addXrayTarget, updateRule, removeXray } from './service';
 
 /**
  * 添加节点
@@ -19,7 +17,7 @@ const handleAdd = async (fields) => {
     const hide = message.loading('正在添加');
 
     try {
-        await addAssets({ ...fields });
+        await addXrayTarget({ ...fields });
         hide();
         message.success('添加成功');
         return true;
@@ -60,8 +58,8 @@ const handleRemove = async (selectedRows) => {
     if (!selectedRows) return true;
 
     try {
-        await removeAssets({
-            key: selectedRows.map((row) => row.uuid),
+        await removeXray({
+            key: selectedRows.map((row) => row.id),
         });
         hide();
         message.success('删除成功，即将刷新');
@@ -87,119 +85,61 @@ const TableList = () => {
 
     const columns = [
         {
-            title: '资产名称',
-            dataIndex: 'name',
-            render: (dom, entity) => {
-                return (
-                    <a
-                        onClick={() => {
-                            setCurrentRow(entity);
-                            setShowDetail(true);
-                        }}
-                    >
-                        {dom}
-                    </a>
-                );
-            },
+            title: 'id',
+            dataIndex: 'id',
+            valueType: 'textarea',
+            hideInTable: true,      // 隐藏此列
+            search: false,
         },
         {
-            title: '资产目标',
+            title: 'Type',
+            dataIndex: 'dataType',
+            valueType: 'textarea',
+        },
+        {
+            title: 'Target',
             dataIndex: 'target',
             valueType: 'textarea',
+            copyable: true,
+        },
+        {
+            title: 'Plugin',
+            dataIndex: 'plugin',
+            valueType: 'textarea',
+            copyable: true,
+        },
+        {
+            title: 'Referenc',
+            dataIndex: 'referenc',
+            valueType: 'textarea',
+            copyable: true,
+            search: false,
+        },
+        {
+            title: 'Request',
+            dataIndex: 'request',
+            valueType: 'textarea',
+            ellipsis: true,
+            copyable: true,
+            search: false,
         },
 
         {
-            title: '更新时间',
-            sorter: true,
-            dataIndex: 'UpdatedAt',
-            valueType: 'dateTime',
-            search: false,
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            hideInForm: true,
-            search: false,
-            valueEnum: {
-                0: {
-                    text: '等待扫描',
-                    status: 'Default',
-                },
-                1: {
-                    text: '扫描中',
-                    status: 'Processing',
-                },
-                2: {
-                    text: '扫描完成',
-                    status: 'Success',
-                },
-            },
-        },
-        {
-            title: 'uuid',
-            dataIndex: 'uuid',
-            valueType: 'text',
-            hideInTable: true,
-            search: false,
-        },
-        {
-            title: '操作',
-            tip: '循环扫描会根据操作进行对应的扫描',
-            dataIndex: 'actions',
+            title: 'Response',
+            dataIndex: 'response',
             valueType: 'textarea',
+            ellipsis: true,
+            copyable: true,
             search: false,
         },
-        {
-            title: '循环扫描',
-            tip: '开启或关闭循环扫描会在下次循环中生效',
-            dataIndex: 'loopscan',
-            search: false,
-            render: (_, record) => {
-                return (
-                    <Switch
-                        checkedChildren={<CheckOutlined />}
-                        unCheckedChildren={<CloseOutlined />}
-                        onChange={(e) => {
-                            Modal.confirm({
-                                title: '确认修改状态信息？',
-                                //自定义按钮内容
-                                okText: '确认',
-                                cancelText: '取消',
-                                onOk() {
-                                    let values;
-                                    //根据开关状态初始化，传入后台的值
-                                    if (e) {
-                                        values = { target: record.target, loopscan: 1 };
-                                        record.loopscan = 1;
-                                    } else {
-                                        values = { target: record.target, loopscan: 0 };
-                                        record.loopscan = 0;
-                                    }
-                                    //调用后台方法修改用户状态
-                                    request('/api/updateLoopScan', {
-                                        method: 'GET',
-                                        headers: {
-                                            Authorization: 'JWT ' + token.get(),
-                                        },
-                                        params: { ...values },
-                                    });
-                                    location.reload();
-                                },
-                                onCancel() { },
-                            });
-                        }}
-                        checked={record.loopscan}
-                    />
-                );
-            },
-        },
+
     ];
     return (
         <PageContainer>
             <ProTable
-                headerTitle=""
+                headerTitle="查询表格"
                 actionRef={actionRef}
-                rowKey="uuid"
+                rowKey="id"
                 search={{
                     labelWidth: 120,
                 }}
@@ -207,7 +147,6 @@ const TableList = () => {
                     <Button
                         type="primary"
                         key="primary"
-                        shape="round"
                         onClick={() => {
                             handleModalVisible(true);
                         }}
@@ -215,7 +154,7 @@ const TableList = () => {
                         <PlusOutlined /> 新建
                     </Button>,
                 ]}
-                request={assets}
+                request={xray}
                 columns={columns}
                 rowSelection={{
                     onChange: (_, selectedRows) => {
@@ -248,11 +187,10 @@ const TableList = () => {
                     >
                         批量删除
                     </Button>
-                    <Button type="primary">批量配置</Button>
                 </FooterToolbar>
             )}
             <ModalForm
-                title="新建资产"
+                title="新建规则"
                 width="400px"
                 visible={createModalVisible}
                 onVisibleChange={handleModalVisible}
@@ -268,63 +206,18 @@ const TableList = () => {
                     }
                 }}
             >
-                <ProFormText
-                    rules={[
-                        {
-                            required: true,
-                            message: '资产名称为必填项',
-                        },
-                    ]}
-                    label="资产名称"
-                    width="md"
-                    name="name"
-                />
                 <ProFormTextArea
                     rules={[
                         {
                             required: true,
-                            message: '资产为必填项',
+                            message: '目标',
                         },
                     ]}
-                    label="资产"
+                    label="扫描目标"
                     width="md"
                     name="target"
                 />
-
-                <ProFormCheckbox.Group
-                    name="action"
-                    layout="horizontal"
-                    options={[
-                        {
-                            label: '子域名扫描',
-                            value: 'subdomain',
-                        },
-                        {
-                            label: '全端口扫描',
-                            value: 'portscan',
-                        },
-                        {
-                            label: 'Nuclei漏洞扫描',
-                            value: 'nuclei',
-                        },
-                        {
-                            label: 'Xray漏洞扫描',
-                            value: 'xray',
-                        },
-                        {
-                            label: '循环扫描',
-                            value: 'loopscan',
-                        },
-                    ]}
-                />
-                <Alert
-                    type="warning"
-                    style={{ margin: '16px 0' }}
-                    message="Xray漏扫，需要专业版，并且在配置文件指定路径，rad 与 xray 同级目录。"
-                    showIcon
-                />
             </ModalForm>
-
             <UpdateForm
                 onSubmit={async (value) => {
                     const success = await handleUpdate(value, currentRow);

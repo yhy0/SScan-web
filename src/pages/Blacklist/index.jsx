@@ -112,6 +112,7 @@ const TableList = () => {
             sorter: true,
             dataIndex: 'UpdatedAt',
             valueType: 'dateTime',
+            search: false,
         },
 
         {

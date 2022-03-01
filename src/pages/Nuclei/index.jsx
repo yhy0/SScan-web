@@ -93,6 +93,7 @@ const TableList = () => {
             dataIndex: 'id',
             valueType: 'textarea',
             hideInTable: true,      // 隐藏此列
+            search: false,
         },
         {
             title: '资产',
