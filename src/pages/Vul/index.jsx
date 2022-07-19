@@ -1,32 +1,13 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
+import { Button, message, Input, Drawer, Tag } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormSelect } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
-import { xray, addXrayTarget, updateRule, removeXray } from './service';
+import { getVul, updateRule, removeVul, Export, getAssets } from './service';
+import { DownloadOutlined } from '@ant-design/icons';
 
-/**
- * 添加节点
- *
- * @param fields
- */
-const handleAdd = async (fields) => {
-    const hide = message.loading('正在添加');
-
-    try {
-        await addXrayTarget({ ...fields });
-        hide();
-        message.success('添加成功');
-        return true;
-    } catch (error) {
-        hide();
-        message.error('添加失败请重试！');
-        return false;
-    }
-};
 /**
  * 更新节点
  *
@@ -58,7 +39,7 @@ const handleRemove = async (selectedRows) => {
     if (!selectedRows) return true;
 
     try {
-        await removeXray({
+        await removeVul({
             key: selectedRows.map((row) => row.id),
         });
         hide();
@@ -70,6 +51,28 @@ const handleRemove = async (selectedRows) => {
         return false;
     }
 };
+
+/**
+ * 导出
+ *
+ * @param selectedRows
+ */
+
+const handleExport = async (name) => {
+    const hide = message.loading('正在导出');
+    try {
+
+        await Export(name);
+        hide();
+        message.success('导出成功，即将刷新');
+        return true;
+    } catch (error) {
+        hide();
+        message.error('导出失败，请重试');
+        return false;
+    }
+};
+
 
 const TableList = () => {
     /** 新建窗口的弹窗 */
@@ -92,13 +95,20 @@ const TableList = () => {
             search: false,
         },
         {
-            title: 'Type',
-            dataIndex: 'dataType',
+            title: '资产',
+            dataIndex: 'assets',
             valueType: 'textarea',
+            width: 100,
         },
         {
-            title: 'Target',
+            title: 'target',
             dataIndex: 'target',
+            valueType: 'textarea',
+            copyable: true,
+        },
+        {
+            title: 'ip',
+            dataIndex: 'ip',
             valueType: 'textarea',
             copyable: true,
         },
@@ -108,6 +118,14 @@ const TableList = () => {
             valueType: 'textarea',
             copyable: true,
         },
+        {
+            title: 'Payload',
+            dataIndex: 'payload',
+            valueType: 'textarea',
+            copyable: true,
+            search: false,
+        },
+
         {
             title: 'Referenc',
             dataIndex: 'referenc',
@@ -132,29 +150,26 @@ const TableList = () => {
             copyable: true,
             search: false,
         },
-
     ];
     return (
         <PageContainer>
             <ProTable
-                headerTitle="查询表格"
+                // scroll={{ x: 'max-content' }}
+                headerTitle=""
                 actionRef={actionRef}
                 rowKey="id"
                 search={{
                     labelWidth: 120,
                 }}
                 toolBarRender={() => [
-                    <Button
-                        type="primary"
-                        key="primary"
+                    <Button type="primary" shape="round"
                         onClick={() => {
                             handleModalVisible(true);
                         }}
-                    >
-                        <PlusOutlined /> 新建
-                    </Button>,
+                        icon={<DownloadOutlined />}> 导出</Button>
+
                 ]}
-                request={xray}
+                request={getVul}
                 columns={columns}
                 rowSelection={{
                     onChange: (_, selectedRows) => {
@@ -162,40 +177,43 @@ const TableList = () => {
                     },
                 }}
             />
-            {selectedRowsState?.length > 0 && (
-                <FooterToolbar
-                    extra={
-                        <div>
-                            已选择{' '}
-                            <a
-                                style={{
-                                    fontWeight: 600,
-                                }}
-                            >
-                                {selectedRowsState.length}
-                            </a>{' '}
-                            项 &nbsp;&nbsp;
-                        </div>
-                    }
-                >
-                    <Button
-                        onClick={async () => {
-                            await handleRemove(selectedRowsState);
-                            setSelectedRows([]);
-                            actionRef.current?.reloadAndRest?.();
-                        }}
+            {
+                selectedRowsState?.length > 0 && (
+                    <FooterToolbar
+                        extra={
+                            <div>
+                                已选择{' '}
+                                <a
+                                    style={{
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {selectedRowsState.length}
+                                </a>{' '}
+                                项 &nbsp;&nbsp;
+                            </div>
+                        }
                     >
-                        批量删除
-                    </Button>
-                </FooterToolbar>
-            )}
+                        <Button
+                            onClick={async () => {
+                                await handleRemove(selectedRowsState);
+                                setSelectedRows([]);
+                                actionRef.current?.reloadAndRest?.();
+                            }}
+                        >
+                            批量删除
+                        </Button>
+                        {/* <Button type="primary">批量审批</Button> */}
+                    </FooterToolbar>
+                )
+            }
             <ModalForm
-                title="新建规则"
+                title="导出"
                 width="400px"
                 visible={createModalVisible}
                 onVisibleChange={handleModalVisible}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value);
+                    const success = await handleExport(value);
 
                     if (success) {
                         handleModalVisible(false);
@@ -206,18 +224,29 @@ const TableList = () => {
                     }
                 }}
             >
-                <ProFormTextArea
-                    rules={[
-                        {
-                            required: true,
-                            message: '目标',
-                        },
-                    ]}
-                    label="扫描目标"
-                    width="md"
-                    name="target"
+                <ProFormSelect
+                    label="导出资产"
+                    name="key"
+                    // request={async () => {//返回的select网络请求
+                    //     let params = await getAssets();
+                    //     let res = [];
+                    //     let temp1 = {};
+                    //     params.data.forEach((v, i) => {
+                    //         let temp = {};
+                    //         temp['label'] = v;
+                    //         temp['value'] = v;
+                    //         res.push(temp)
+                    //     });
+                    //     return res
+                    // }
+                    // }
+                    value="all"
+
+                // rules={[{ required: true, message: '请选择资产' }]}
                 />
+
             </ModalForm>
+
             <UpdateForm
                 onSubmit={async (value) => {
                     const success = await handleUpdate(value, currentRow);
@@ -262,7 +291,7 @@ const TableList = () => {
                     />
                 )}
             </Drawer>
-        </PageContainer>
+        </PageContainer >
     );
 };
 

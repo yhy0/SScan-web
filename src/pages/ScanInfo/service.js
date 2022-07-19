@@ -87,3 +87,15 @@ export async function removeRule(data, options) {
         ...(options || {}),
     });
 }
+
+
+export async function vulScan(data, options) {
+    return request('/api/vulScan', {
+        data,
+        headers: {
+            Authorization: 'JWT ' + token.get(),
+        },
+        method: 'POST',
+        ...(options || {}),
+    });
+}

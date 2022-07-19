@@ -51,21 +51,35 @@ export default [
         component: './ScanInfo',
     },
     {
-        name: 'Nuclei',
+        name: 'Vul',
         icon: '/dist/nuclei.svg',
-        path: '/nuclei',
-        component: './Nuclei',
+        path: '/Vul',
+        component: './Vul',
     },
+    // {
+    //     name: '黑名单',
+    //     icon: '/dist/blacklist.svg',
+    //     path: '/blacklist',
+    //     component: './Blacklist',
+    // },
     {
-        name: 'Xray',
-        icon: '/dist/xray.svg',
-        path: '/xray',
-        component: './Xray',
-    },
-    {
-        name: '黑名单',
+        name: '设置',
         icon: '/dist/blacklist.svg',
-        path: '/blacklist',
-        component: './Blacklist',
+        path: '/setting',
+
+        routes: [
+            {
+                name: '黑名单',
+                path: '/setting/Blacklist',
+                // icon: '/dist/blacklist.svg',        // 沙雕 ant design，二级菜单不显示 icon 竟然是新功能，也没个详细文档让我配置
+                component: './Setting/Blacklist',
+            },
+            {
+                name: 'CDN',
+                path: '/setting/CDN',
+                // icon: '/dist/blacklist.svg',
+                component: './Setting/CDN',
+            },
+        ],
     },
 ];

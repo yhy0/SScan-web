@@ -3,7 +3,7 @@ import { Button, message, Input, Drawer, Switch, Modal, Alert } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormCheckbox, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormCheckbox, ProFormText, ProFormTextArea, ProFormDigit } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
 import { assets, addAssets, updateRule, removeAssets } from './service';
@@ -88,7 +88,7 @@ const TableList = () => {
     const columns = [
         {
             title: '资产名称',
-            dataIndex: 'name',
+            dataIndex: 'belong',
             render: (dom, entity) => {
                 return (
                     <a
@@ -277,7 +277,7 @@ const TableList = () => {
                     ]}
                     label="资产名称"
                     width="md"
-                    name="name"
+                    name="belong"
                 />
                 <ProFormTextArea
                     rules={[
@@ -304,6 +304,10 @@ const TableList = () => {
                             value: 'portscan',
                         },
                         {
+                            label: 'C段扫描',
+                            value: 'cScan',
+                        },
+                        {
                             label: 'Nuclei漏洞扫描',
                             value: 'nuclei',
                         },
@@ -317,10 +321,19 @@ const TableList = () => {
                         },
                     ]}
                 />
+                <ProFormDigit min={1} max={255} width="xs" name="ipSum" label="IP数" initialValue={1} />
+
+                <ProFormDigit min={1} max={255} width="xs" name="priority" label="任务优先级" initialValue={1} />
                 <Alert
                     type="warning"
-                    style={{ margin: '16px 0' }}
-                    message="Xray漏扫，需要专业版，并且在配置文件指定路径，rad 与 xray 同级目录。"
+                    style={{ margin: '8px 0' }}
+                    message="Xray漏扫,需要专业版,并且在配置文件指定路径,rad 与 xray 同级目录。"
+                    showIcon
+                />
+                <Alert
+                    type="warning"
+                    style={{ margin: '8px 0' }}
+                    message="指定ip数可以进行更加精确的扫描。当资产中域名在某个 C 段超过指定IP数,才会对该 C 段进行扫描。"
                     showIcon
                 />
             </ModalForm>

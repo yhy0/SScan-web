@@ -1,12 +1,12 @@
-import { PlusOutlined, DownloadOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Input, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormSelect } from '@ant-design/pro-form';
+import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
-import { rule, addRule, updateRule, removeRule, Export, getAssets } from './service';
+import { rule, addRule, updateRule, removeRule } from './service';
 
 /**
  * 添加节点
@@ -59,7 +59,7 @@ const handleRemove = async (selectedRows) => {
 
     try {
         await removeRule({
-            key: selectedRows.map((row) => row.url),
+            key: selectedRows.map((row) => row.ip),
         });
         hide();
         message.success('删除成功，即将刷新');
@@ -67,28 +67,6 @@ const handleRemove = async (selectedRows) => {
     } catch (error) {
         hide();
         message.error('删除失败，请重试');
-        return false;
-    }
-};
-
-/**
- * 导出
- *
- * @param selectedRows
- */
-
-const handleExport = async (name) => {
-    const hide = message.loading('正在导出');
-    if (!name) return true;
-    try {
-
-        await Export(name);
-        hide();
-        message.success('导出成功，即将刷新');
-        return true;
-    } catch (error) {
-        hide();
-        message.error('导出失败，请重试');
         return false;
     }
 };
@@ -107,12 +85,11 @@ const TableList = () => {
 
     const columns = [
         {
-            title: '资产',
-            dataIndex: 'assets',
-            fixed: 'left',
-            width: 100,
-            // tip: '资产名称是唯一的 key',
-            render: (dom, entity) => {      // 点击旁边出来个页面
+            title: 'cname',
+            dataIndex: 'cname',
+            tip: 'cname 是唯一的 key',
+            copyable: true,
+            render: (dom, entity) => {
                 return (
                     <a
                         onClick={() => {
@@ -126,137 +103,59 @@ const TableList = () => {
             },
         },
         {
-            title: 'url',
-            dataIndex: 'url',
+            title: 'Label',
+            dataIndex: 'label',
             valueType: 'textarea',
-            copyable: true,
-            fixed: 'left',
-        },
-        {
-            title: 'ip',
-            dataIndex: 'ip',
-            valueType: 'textarea',
-            render: (text, record) => {
-                let snArray = [];
-
-                snArray = record.ip.split(" ");      // 空格分开换行显示
-
-                let br = <br></br>;
-                let result = null;
-                if (snArray.length < 2) {
-                    return text;
-                }
-
-                for (let i = 0; i < snArray.length; i = i + 2) {
-                    if (i == 0) {
-                        result = snArray[i] + "  " + snArray[i + 1];
-                    } else {
-                        result = <span>{result}{br}{snArray[i]}  {snArray[i + 1]}</span>;
-                    }
-                }
-                return <div>{result}</div>;
-            },
-        },
-        {
-            title: 'ports',
-            dataIndex: 'ports',
-            valueType: 'textarea',
-            ellipsis: true,
-            copyable: true,
-        },
-        {
-            title: 'CDN',
-            dataIndex: 'cdn',
-            search: false,
-            sorter: (a, b) => a.cdn - b.cdn,
-            valueEnum: {
-                true: {
-                    text: 'True',
-                    status: 'Success',
-                },
-                false: {
-                    text: 'False',
-                    status: 'Default',
-                },
-            },
-        },
-        {
-            title: '子域名接管',
-            dataIndex: 'takeover',
-            sorter: (a, b) => a.takeover - b.takeover,
-            valueEnum: {
-                true: {
-                    text: 'True',
-                    status: 'Success',
-                },
-                false: {
-                    text: 'False',
-                    status: 'Default',
-                },
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            hideInForm: true,
-            search: false,
-            valueEnum: {
-                0: {
-                    text: '等待扫描',
-                    status: 'Default',
-                },
-                1: {
-                    text: '扫描中',
-                    status: 'Processing',
-                },
-                2: {
-                    text: '扫描完成',
-                    status: 'Success',
-                },
-            },
         },
         {
             title: '更新时间',
             sorter: true,
             dataIndex: 'UpdatedAt',
             valueType: 'dateTime',
+            search: false,
         },
-        {
-            title: '操作',
-            dataIndex: 'option',
-            valueType: 'option',
 
-            // render: (_, record) => [
-            //     <a
-            //         key="config"
-            //         onClick={() => {
-            //             handleUpdateModalVisible(true);
-            //             setCurrentRow(record);
-            //         }}
-            //     >
-            //         配置
-            //     </a>,
-            // ],
-        },
+        // {
+        //     title: '操作',
+        //     dataIndex: 'option',
+        //     valueType: 'option',
+        //     render: (_, record) => [
+        //         <a
+        //             key="config"
+        //             onClick={() => {
+        //                 handleUpdateModalVisible(true);
+        //                 setCurrentRow(record);
+        //             }}
+        //         >
+        //             配置
+        //         </a>,
+        //         // <a key="subscribeAlert" href="https://procomponents.ant.design/">
+        //         //     订阅警报
+        //         // </a>,
+        //     ],
+        // },
     ];
     return (
         <PageContainer>
             <ProTable
-                scroll={{ x: 'max-content' }}
                 headerTitle=""
                 actionRef={actionRef}
-                rowKey="url"            // 根据这个值删除
+                rowKey="key"
                 search={{
                     labelWidth: 120,
                 }}
                 toolBarRender={() => [
-                    <Button type="primary" shape="round"
+                    <Button
+                        type="primary"
+                        key="primary"
+                        shape="round"
                         onClick={() => {
                             handleModalVisible(true);
                         }}
-                        icon={<DownloadOutlined />}> 导出</Button>
-                ]
-                }
+                    >
+                        <PlusOutlined /> 新建
+                    </Button>,
+                ]}
                 request={rule}
                 columns={columns}
                 rowSelection={{
@@ -293,14 +192,13 @@ const TableList = () => {
                     <Button type="primary">批量审批</Button>
                 </FooterToolbar>
             )}
-
             <ModalForm
-                title="导出"
+                title="新建规则"
                 width="400px"
                 visible={createModalVisible}
                 onVisibleChange={handleModalVisible}
                 onFinish={async (value) => {
-                    const success = await handleExport(value);
+                    const success = await handleAdd(value);
 
                     if (success) {
                         handleModalVisible(false);
@@ -311,26 +209,18 @@ const TableList = () => {
                     }
                 }}
             >
-                <ProFormSelect
-                    label="导出资产"
-                    name="key"
-                    request={async () => {//返回的select网络请求
-                        let params = await getAssets();
-                        let res = [];
-                        params.data.forEach((v, i) => {
-                            let temp = {};
-                            temp['label'] = v;
-                            temp['value'] = v;
-                            res.push(temp)
-                        });
-                        return res
-                    }
-                    }
-                    placeholder="请选择资产"
-
-                    rules={[{ required: true, message: '请选择资产' }]}
+                <ProFormText
+                    rules={[
+                        {
+                            required: true,
+                            message: 'cname为必填项',
+                        },
+                    ]}
+                    label="cname"
+                    width="md"
+                    name="cname"
                 />
-
+                <ProFormTextArea label="标签" width="md" name="label" />
             </ModalForm>
             <UpdateForm
                 onSubmit={async (value) => {

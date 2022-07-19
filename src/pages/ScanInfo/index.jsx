@@ -1,12 +1,12 @@
-import { Button, message, Input, Drawer, Tag } from 'antd';
+import { Button, message, Input, Drawer, Tag, Space } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormSelect } from '@ant-design/pro-form';
+import { ModalForm, ProFormSelect, ProFormCheckbox, ProFormDigit } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
-import { rule, updateRule, removeRule, Export, getAssets } from './service';
-import { DownloadOutlined } from '@ant-design/icons';
+import { rule, updateRule, removeRule, Export, getAssets, vulScan } from './service';
+import { DownloadOutlined, FireTwoTone } from '@ant-design/icons';
 
 /**
  * 更新节点
@@ -73,10 +73,28 @@ const handleExport = async (name) => {
     }
 };
 
+const handleVulScan = async (fields) => {
+    const hide = message.loading('任务下发');
+
+    try {
+        await vulScan({ ...fields });
+        hide();
+        message.success('任务已下发，即将刷新');
+        return true;
+    } catch (error) {
+        hide();
+        message.error('任务下发，请重试');
+        return false;
+    }
+};
+
+
 const TableList = () => {
     /** 新建窗口的弹窗 */
     const [createModalVisible, handleModalVisible] = useState(false);
     /** 分布更新窗口的弹窗 */
+
+    const [cmv, hmv] = useState(false);
 
     const [updateModalVisible, handleUpdateModalVisible] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
@@ -172,19 +190,14 @@ const TableList = () => {
                     let a = new Array();
                     if (snArray.length > 0 && snArray.length < 2) {
                         if (snArray[0].includes('1_')) {
-                            color_tmp = 'yellow';
-                        } else if (snArray[0].includes('2_')) {
                             color_tmp = 'blue';
                         } else {
                             color_tmp = 'red';
                         }
                         return <Tag color={color_tmp}> {record.fingerprint.slice(2)}</Tag>;
                     }
-
                     for (let i = 0; i < snArray.length; i = i + 1) {
                         if (snArray[i].includes('1_')) {
-                            color_tmp = 'yellow';
-                        } else if (snArray[i].includes('2_')) {
                             color_tmp = 'blue';
                         } else {
                             color_tmp = 'red';
@@ -263,12 +276,24 @@ const TableList = () => {
                         type="primary"
                         shape="round"
                         onClick={() => {
+                            hmv(true);
+                        }}
+                        icon={<FireTwoTone />}
+                    >
+                        漏扫
+
+                    </Button>,
+
+                    <Button
+                        type="out"
+                        shape="round"
+                        onClick={() => {
                             handleModalVisible(true);
                         }}
                         icon={<DownloadOutlined />}
                     >
-                        {' '}
                         导出
+
                     </Button>,
                 ]}
                 request={rule}
@@ -307,43 +332,96 @@ const TableList = () => {
                     <Button type="primary">批量审批</Button>
                 </FooterToolbar>
             )}
-            <ModalForm
-                title="导出"
-                width="400px"
-                visible={createModalVisible}
-                onVisibleChange={handleModalVisible}
-                onFinish={async (value) => {
-                    const success = await handleExport(value);
+            <Space>
+                <ModalForm
+                    title="漏洞扫描"
+                    width="400px"
+                    visible={cmv}
+                    onVisibleChange={hmv}
+                    onFinish={async (value) => {
+                        const success = await handleVulScan(value);
 
-                    if (success) {
-                        handleModalVisible(false);
+                        if (success) {
+                            hmv(false);
 
-                        if (actionRef.current) {
-                            actionRef.current.reload();
+                            if (actionRef.current) {
+                                actionRef.current.reload();
+                            }
                         }
-                    }
-                }}
-            >
-                <ProFormSelect
-                    label="导出资产"
-                    name="key"
-                    request={async () => {
-                        //返回的select网络请求
-                        let params = await getAssets();
-                        let res = [];
-                        params.data.forEach((v, i) => {
-                            let temp = {};
-                            temp['label'] = v;
-                            temp['value'] = v;
-                            res.push(temp);
-                        });
-                        return res;
                     }}
-                    placeholder="请选择资产"
-                    rules={[{ required: true, message: '请选择资产' }]}
-                />
-            </ModalForm>
+                >
+                    <ProFormSelect
+                        label="漏洞扫描"
+                        name="key"
+                        request={async () => {//返回的select网络请求
+                            let params = await getAssets();
+                            let res = [];
+                            params.data.forEach((v, i) => {
+                                let temp = {};
+                                temp['label'] = v;
+                                temp['value'] = v;
+                                res.push(temp)
+                            });
+                            return res
+                        }
+                        }
+                        placeholder="请选择资产"
+                        rules={[{ required: true, message: '请选择资产' }]}
+                    />
+                    <ProFormCheckbox.Group
+                        name="action"
+                        layout="horizontal"
+                        options={[
+                            {
+                                label: 'Nuclei漏洞扫描',
+                                value: 'nuclei',
+                            },
+                            {
+                                label: 'Xray漏洞扫描',
+                                value: 'xray',
+                            },
+                        ]}
+                    />
+                    <ProFormDigit min={1} max={255} width="xs" name="priority" label="任务优先级" initialValue={1} />
+                </ModalForm>
 
+                <ModalForm
+                    title="导出"
+                    width="400px"
+                    visible={createModalVisible}
+                    onVisibleChange={handleModalVisible}
+                    onFinish={async (value) => {
+                        const success = await handleExport(value);
+
+                        if (success) {
+                            handleModalVisible(false);
+
+                            if (actionRef.current) {
+                                actionRef.current.reload();
+                            }
+                        }
+                    }}
+                >
+                    <ProFormSelect
+                        label="导出资产"
+                        name="key"
+                        request={async () => {//返回的select网络请求
+                            let params = await getAssets();
+                            let res = [];
+                            params.data.forEach((v, i) => {
+                                let temp = {};
+                                temp['label'] = v;
+                                temp['value'] = v;
+                                res.push(temp)
+                            });
+                            return res
+                        }
+                        }
+                        placeholder="请选择资产"
+                        rules={[{ required: true, message: '请选择资产' }]}
+                    />
+                </ModalForm>
+            </Space>
             <UpdateForm
                 onSubmit={async (value) => {
                     const success = await handleUpdate(value, currentRow);

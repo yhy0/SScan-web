@@ -5,8 +5,8 @@ import { request } from 'umi';
 import token from '@/utils/token';
 
 /** 获取规则列表 GET /api/nuclei */
-export async function rule(params, options) {
-    return request('/api/nuclei', {
+export async function getVul(params, options) {
+    return request('/api/vul', {
         method: 'GET',
         headers: {
             Authorization: 'JWT ' + token.get(),
@@ -54,8 +54,9 @@ export async function addRule(data, options) {
 
 /** 删除规则 DELETE /api/rule */
 
-export async function removeRule(data, options) {
-    return request('/api/rule', {
+
+export async function removeVul(data, options) {
+    return request('/api/delVul', {
         data,
         headers: {
             Authorization: 'JWT ' + token.get(),
@@ -67,8 +68,8 @@ export async function removeRule(data, options) {
 
 export async function Export(data, options) {
 
-    return request(`/api/exportNuclei`, {
-        method: 'POST',
+    return request(`/api/exportVul`, {
+        method: 'GET',
         data,
         responseType: 'blob', // 必须注明返回二进制流
         headers: {
